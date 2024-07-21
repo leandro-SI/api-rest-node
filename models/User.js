@@ -3,6 +3,23 @@ var bcrypt = require('bcrypt');
 
 class User {
 
+    findAll = async () => {
+        try {
+            return await knex.select(['id', 'name', 'email', 'role_id']).table('users');
+        } catch (error) {
+            console.log(error);
+            return [];
+        }
+    }
+
+    findById = async (id) => {
+        try {
+            return await knex.select(['id', 'name', 'email', 'role_id']).table('users').where({id: id}).first();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     createUser = async (name, email, password, role_id) => {
         
         try {
