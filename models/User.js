@@ -48,7 +48,21 @@ class User {
             let user = await this.findById(id);
 
             if (user != undefined) {
-                await knex.update({name: name, email: email}).table('users').where({id: id});
+
+                let editUser = {};
+                editUser.name = name;
+
+                if (email != user.email) {
+                    var result = await this.findEmail(email);
+                    if (result == false) {
+                        editUser.email = email;
+                    } else {
+                        return {status: false, err: "Email já cadastrado!"}
+
+                    }
+                }
+
+                await knex.update(editUser).table('users').where({id: id});
                 return {status: true, mensagem: "Usuário atualizado com sucesso."}
             } else {
                 return {status: false, err: "Usuário não encontrado!"}
