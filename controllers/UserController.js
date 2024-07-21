@@ -18,8 +18,8 @@ class UserController {
         let id = request.params.id;
 
         if (isNaN(id)) {
-            respose.status(400);
-            respose.json({err: 'Id inválido!'});
+            response.status(400);
+            response.json({err: 'Id inválido!'});
             return;
         }
 
@@ -35,27 +35,69 @@ class UserController {
         response.json(user);
     }
 
-    create = async (request, respose) => {
+    create = async (request, response) => {
         let {name, email, password} = request.body;
 
         if (password == undefined) {
-            respose.status(400);
-            respose.json({err: 'todos os dados são obrigatórios'});
+            response.status(400);
+            response.json({err: 'todos os dados são obrigatórios'});
             return;
         }
 
         let emailExists = await User.findEmail(email);
 
         if (emailExists) {
-            respose.status(400);
-            respose.json({err: 'Email já cadastrado!'});
+            response.status(400);
+            response.json({err: 'Email já cadastrado!'});
             return;
         }
 
         await User.createUser(name, email, password);
 
-        respose.status(200);
-        respose.json('Usuario criado com sucesso!')
+        response.status(200);
+        response.json('Usuario criado com sucesso!')
+
+    }
+
+    update = async (request, response) => {
+        const { id, name, email } = request.body;
+        const idUser = request.params.id;
+
+        if (isNaN(id)) {
+            response.status(400);
+            response.json({err: 'Id inválido!'});
+            return;
+        }
+
+        if (id != idUser) {
+            response.status(400);
+            response.json({err: 'Id inválido!'});
+            return;
+        }
+
+        if (name == undefined || name == "") {
+            response.status(400);
+            response.json({err: 'Nome é requerido!'});
+            return;
+        }
+
+        if (email == undefined || email == "") {
+            response.status(400);
+            response.json({err: 'Email é requerido!'});
+            return;
+        }
+
+        let result = await User.update(id, name, email);
+
+        if (result.status == false) {
+            response.status(400);
+            response.json({err: result.err});
+            return;
+        } else {
+            response.status(200);
+            response.json(result.mensagem);
+            return;
+        }
 
     }
 }

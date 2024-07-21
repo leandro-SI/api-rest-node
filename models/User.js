@@ -42,6 +42,21 @@ class User {
             return false;
         }
     }
+
+    update = async (id, name, email) => {
+        try {
+            let user = await this.findById(id);
+
+            if (user != undefined) {
+                await knex.update({name: name, email: email}).table('users').where({id: id});
+                return {status: true, mensagem: "Usuário atualizado com sucesso."}
+            } else {
+                return {status: false, err: "Usuário não encontrado!"}
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }
 
 module.exports = new User();
