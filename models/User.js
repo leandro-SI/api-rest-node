@@ -82,6 +82,14 @@ class User {
             return {status: false, err: "Usuário não encontrado!"}
         }
     }
+
+    findByEmail = async (email) => {
+        try {
+            return await knex.select(['id', 'name', 'email', 'role_id']).table('users').where({email: email}).first();
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }
 
 module.exports = new User();

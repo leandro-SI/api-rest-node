@@ -1,5 +1,6 @@
 const { request, response } = require('express');
-var User = require('../models/User')
+var User = require('../models/User');
+var PasswordToken = require('../models/PasswordToken');
 
 class UserController {
 
@@ -120,6 +121,23 @@ class UserController {
                     mensagem: 'Usuário deletado com sucesso'
                 })
             }
+        }
+    }
+
+    recoverPassword = async (request, response) => {
+        let email = request.body.email;
+
+        let result = await PasswordToken.create(email);
+
+        if (result.status == false) {
+            return response.status(400).json({
+                err: result.err
+            })
+        } else {
+            return response.status(200).json({
+                mensagem: 'Email de recuperação enviado com sucesso.',
+                token: result.token
+            })
         }
     }
 }
