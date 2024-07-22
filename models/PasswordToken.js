@@ -30,6 +30,38 @@ class PasswordToken {
             return {status: false, err: error}
         }
     }
+
+    validate = async (token) => {
+        console.log('token: ', token)
+        try {
+            let result = await knex.select("*").table('password_tokens').where({token: token}).first();
+            console.log('result: ', result)
+            if (result != null) {
+
+                if (result.used == 0) {
+                    return {status: true, token: result}
+                } else {
+                    return {status: false};
+                }
+
+            } else {
+                return {status: false};
+            }
+
+        } catch (error) {
+            console.log(error);
+            return {status: false};
+        }
+    }
+
+    setUsed = async (token) => {
+        try {
+            await knex.update({used: 1}).table('password_tokens').where({token: token});
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 }
 
 module.exports = new PasswordToken();
