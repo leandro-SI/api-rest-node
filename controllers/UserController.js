@@ -1,6 +1,10 @@
 const { request, response } = require('express');
 var User = require('../models/User');
 var PasswordToken = require('../models/PasswordToken');
+var jwt = require('jsonwebtoken');
+var bcrypt = require('bcrypt');
+
+var secret_key = 'm0ok89uj908j0fidnoici83hj08nfi0nmiiw';
 
 class UserController {
 
@@ -146,7 +150,7 @@ class UserController {
         let password_new = request.body.password;
 
         let is_token_valid = await PasswordToken.validate(token);
-        console.log('is_token_valid: ', is_token_valid.status)
+
         if (is_token_valid.status) {
             await User.changePassword(password_new, is_token_valid.token.user_id, is_token_valid.token.token);
 
@@ -157,6 +161,36 @@ class UserController {
         } else {
             return response.status(400).json({
                 err: 'Token inválido!'
+            })
+        }
+    }
+
+    login = async (request, response) => {
+        let {email, password} = request.body;
+
+        let user = await User.findByEmail(email);
+
+        if (user != undefined) {
+
+            let user_valid = await bcrypt.compare(password, user.password);
+
+            if (user_valid) {
+
+                var token = jwt.sign({ email: email, role: user.role }, secret_key);
+
+                return response.status(200).json({
+                    token: token
+                })
+
+            } else {
+                return response.status(400).json({
+                    mensagem: 'usuario incorreto.'
+                })
+            }
+
+        } else {
+            return response.status(400).json({
+                err: 'Usuário inválido!'
             })
         }
     }

@@ -86,7 +86,13 @@ class User {
 
     findByEmail = async (email) => {
         try {
-            return await knex.select(['id', 'name', 'email', 'role_id']).table('users').where({email: email}).first();
+            return await knex.select(['users.id as id', 'users.name as name', 'password', 'email', 'role_id', 'roles.name as role'])
+                .table('users')
+                .innerJoin('roles', 'users.role_id', 'roles.id')
+                .where({email: email})
+                .first();
+
+
         } catch (error) {
             console.log(error);
         }

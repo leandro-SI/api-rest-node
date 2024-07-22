@@ -13,5 +13,6 @@ router.put('/user/update/:id', UserController.update);
 router.delete('/user/delete/:id', UserController.delete);
 router.post('/user/recover', UserController.recoverPassword);
 router.post('/user/change-password', UserController.changePassword);
+router.post('/user/login', UserController.login);
 
 module.exports = router;
