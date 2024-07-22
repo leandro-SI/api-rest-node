@@ -100,6 +100,28 @@ class UserController {
         }
 
     }
+
+    delete = async (request, response) => {
+        let id = request.params.id;
+
+        if (isNaN(id)) {
+            return response.status(400).json({
+                err: 'Id Invalido.'
+            })
+        } else {
+            let result = await User.delete(id);
+
+            if (result.status == false) {
+                return response.status(400).json({
+                    err: result.err
+                })
+            } else {
+                return response.status(200).json({
+                    mensagem: 'Usuário deletado com sucesso'
+                })
+            }
+        }
+    }
 }
 
 module.exports = new UserController();

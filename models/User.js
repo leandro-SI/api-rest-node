@@ -71,6 +71,17 @@ class User {
             console.log(error)
         }
     }
+
+    delete = async (id) => {
+        let user = await this.findById(id);
+
+        if (user != undefined) {
+            await knex.delete().table('users').where({id: id});
+            return {status: true}
+        } else {
+            return {status: false, err: "Usuário não encontrado!"}
+        }
+    }
 }
 
 module.exports = new User();

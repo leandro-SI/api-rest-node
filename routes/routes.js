@@ -10,5 +10,6 @@ router.post('/user/new', UserController.create);
 router.get('/user/find-all', UserController.findAll);
 router.get('/user/find-by-id/:id', UserController.findById);
 router.put('/user/update/:id', UserController.update);
+router.delete('/user/delete/:id', UserController.delete);
 
 module.exports = router;
